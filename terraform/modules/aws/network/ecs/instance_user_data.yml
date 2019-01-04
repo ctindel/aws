@@ -1,0 +1,26 @@
+#cloud-config
+debug: true
+disable_root: false
+hostname: ${hostname}
+fqdn: ${hostname}.${sa_dns_domain}
+manage_etc_hosts: true
+apt_update: true
+package_upgrade: true
+apt_sources:
+packages:
+growpart:
+    mode: auto
+    devices: ['/']
+    ignore_growroot_disabled: false
+bootcmd:
+    - mkdir /home/elastic/bin
+    - chown elastic:elastic /home/elastic/bin
+write_files:
+    - path: /root/bin/setup_ecs_agent.sh
+      encoding: base64
+      content: ${base64encode(setup_ecs_agent_sh)}
+      owner: "root:root"
+      permissions: "0755"
+runcmd:
+    - echo "/sbin/halt" | /usr/bin/at midnight $$(date -d 'next Saturday' '+%Y-%m-%d')
+    - /root/bin/setup_ecs_agent.sh

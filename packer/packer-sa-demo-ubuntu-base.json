@@ -1,0 +1,86 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "sa_demo_es_user": "{{env `SA_DEMO_ES_USER`}}",
+    "sa_demo_es_password": "{{env `SA_DEMO_ES_PASSWORD`}}",
+    "sa_demo_es_proto": "{{env `SA_DEMO_ES_PROTO`}}",
+    "sa_demo_es_host": "{{env `SA_DEMO_ES_HOST`}}",
+    "sa_demo_es_port": "{{env `SA_DEMO_ES_PORT`}}",
+    "sa_demo_kibana_proto": "{{env `SA_DEMO_KIBANA_PROTO`}}",
+    "sa_demo_kibana_host": "{{env `SA_DEMO_KIBANA_HOST`}}",
+    "sa_demo_kibana_port": "{{env `SA_DEMO_KIBANA_PORT`}}",
+    "sa_demo_env": "{{env `SA_DEMO_ENV`}}",
+    "sa_demo_aws_region": "{{env `SA_DEMO_AWS_REGION`}}",
+    "sa_demo_aws_account_number": "{{env `SA_DEMO_AWS_ACCOUNT_NUMBER`}}",
+    "aws_default_region": "us-east-2"
+  },
+  "_comment": "Use the hvm ebs-ssd image type for finding amis",
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key_id`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_default_region`}}",
+    "source_ami": "ami-00c5e3f4a8dd369e8",
+    "instance_type": "m4.2xlarge",
+    "ssh_username": "ubuntu",
+    "ami_name": "sa-demo-{{user `sa_demo_env`}}-ubuntu-base-16.04",
+    "ami_description": "SA Demo {{user `sa_demo_env`}} Ubuntu Base 16.04",
+    "force_deregister": "true",
+    "subnet_id": "subnet-3ca78254",
+    "security_group_ids" : [ "sg-0491bd42eefb56baf" ],
+    "associate_public_ip_address" : true
+  }],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "../ssh/sa-demo-bootkey-20190103.id_rsa.pub",
+      "destination": "/var/tmp/amazon.pub"
+    },
+    {
+      "type": "file",
+      "source": "../ssh/sa-demo-bootkey-20190103.id_rsa",
+      "destination": "/var/tmp/amazon.key"
+    },
+    {
+      "type": "file",
+      "source": "files/update_route53_mapping.sh",
+      "destination": "/var/tmp/update_route53_mapping.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/rc.local",
+      "destination": "/var/tmp/rc.local"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "environment_vars" : [
+          "AWS_ACCESS_KEY_ID={{user `aws_access_key_id`}}",
+          "AWS_SECRET_ACCESS_KEY={{user `aws_secret_key`}}",
+          "AWS_DEFAULT_REGION={{user `aws_default_region`}}",
+          "SA_DEMO_ENV={{user `sa_demo_env`}}",
+          "SA_DEMO_AWS_REGION={{user `sa_demo_aws_region`}}",
+          "DEBIAN_FRONTEND=noninteractive"
+      ],
+      "scripts": [
+        "scripts/common/install_amazon_user.sh",
+        "scripts/common/install_amazon_user_private_keys.sh",
+        "scripts/common/setup_amazon_vars.sh",
+        "scripts/ubuntu/setup_rclocal.sh",
+        "scripts/ubuntu/setup_apt.sh",
+        "scripts/ubuntu/install_utils.sh",
+        "scripts/common/setup_ntp.sh",
+        "scripts/ubuntu/setup_firewall.sh",
+        "scripts/ubuntu/setup_config.sh",
+        "scripts/ubuntu/disable_apt-daily_and_update_on_first_boot.sh",
+        "scripts/common/install_build_tools.sh",
+        "scripts/ubuntu/install_java.sh",
+        "scripts/ubuntu/install_docker.sh",
+        "scripts/ubuntu/install_aws.sh",
+        "scripts/common/fix_amazon_user_ownership.sh",
+        "scripts/common/fix_root_user_ownership.sh"
+      ]
+    }
+  ]
+}
