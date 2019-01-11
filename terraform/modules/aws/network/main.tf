@@ -23,6 +23,7 @@ module "route53" {
 module "vpc" {
   source = "./vpc"
 
+  region   = "${var.region}"
   name     = "${var.name}-vpc"
   env      = "${var.env}"
   owned_by = "${var.owned_by}"
@@ -84,6 +85,7 @@ module "private_subnet" {
   env      = "${var.env}"
   owned_by = "${var.owned_by}"
   vpc_id   = "${module.vpc.vpc_id}"
+  vpc_s3_endpoint_id = "${module.vpc.vpc_s3_endpoint_id}"
   cidrs    = "${var.private_subnets}"
   azs      = "${var.azs}"
 

@@ -44,3 +44,9 @@ resource "aws_route_table_association" "private" {
     create_before_destroy = true
   }
 }
+
+resource "aws_vpc_endpoint_route_table_association" "example" {
+  count  = "${length(var.cidrs)}"
+  route_table_id = "${aws_route_table.private.*.id[count.index]}"
+  vpc_endpoint_id = "${var.vpc_s3_endpoint_id}"
+}

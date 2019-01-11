@@ -7,6 +7,7 @@ variable "env" {}
 variable "owned_by" {}
 
 variable "vpc_id" {}
+variable "vpc_s3_endpoint_id" {}
 
 variable "cidrs" {
   type = "list"

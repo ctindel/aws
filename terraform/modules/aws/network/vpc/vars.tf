@@ -1,3 +1,5 @@
+variable "region" {}
+
 variable "name" {
   default = "vpc"
 }

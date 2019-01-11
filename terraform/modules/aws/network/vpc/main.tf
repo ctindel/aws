@@ -13,3 +13,9 @@ resource "aws_vpc" "vpc" {
     create_before_destroy = true
   }
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = "${aws_vpc.vpc.id}"
+  service_name = "com.amazonaws.${var.region}.s3"
+}
+

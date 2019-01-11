@@ -11,6 +11,10 @@ output "vpc_cidr" {
   value = "${module.vpc.vpc_cidr}"
 }
 
+output "vpc_s3_endpoint_id" {
+  value = "${module.vpc.vpc_s3_endpoint_id}"
+}
+
 # Security Group
 output "sg_allow_ssh_from_anywhere_id" {
   value = "${aws_security_group.allow_ssh_from_anywhere.id}"
