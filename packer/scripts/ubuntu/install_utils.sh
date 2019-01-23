@@ -1,3 +1,3 @@
 #!/bin/bash
 
-apt-get install -y zip nmap sysstat
+apt-get install -y zip nmap sysstat jq

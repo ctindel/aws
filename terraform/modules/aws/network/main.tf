@@ -225,6 +225,32 @@ resource "aws_security_group" "allow_https_from_anywhere" {
   }
 }
 
+resource "aws_security_group" "allow_documentdb_from_anywhere" {
+  name        = "${var.name}-${var.env}-allow-documentdb-from-anywhere-sg"
+  description = "${var.name}-${var.env} VPC Allow documentdb from anywhere security group"
+  vpc_id      = "${module.vpc.vpc_id}"
+
+  tags {
+    Name       = "${var.name}-${var.env}-allow-documentdb-from-anywhere-sg"
+    managed-by = "terraform"
+    owned_by   = "${var.owned_by}"
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 27017
+    to_port     = 27017
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 data "aws_acm_certificate" "env_sa_dynamodb_amazon_com" {
   domain = "*.${var.env}.${var.r53_domain}"
   statuses = ["ISSUED"]
