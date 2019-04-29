@@ -1,0 +1,55 @@
+#cloud-config
+debug: true
+disable_root: false
+hostname: ${hostname}
+fqdn: ${hostname}.${sa_dns_domain}
+manage_etc_hosts: true
+apt_update: true
+package_upgrade: true
+apt_sources:
+packages:
+    #- mongodb-org
+    # YCSB scripts need python
+    - python2.7
+    - python-pip
+growpart:
+    mode: auto
+    devices: ['/']
+    ignore_growroot_disabled: false
+write_files:
+    - path: /etc/systemd/system/ycsb_cassandra.service
+      encoding: base64
+      content: ${base64encode(ycsb_cassandra_service)}
+      owner: "root:root"
+      permissions: "0644"
+    - path: /home/amazon/start_cassandra.sh
+      encoding: base64
+      content: ${base64encode(cstart_cassandra_sh)}
+      owner: "amazon:amazon"
+      permissions: "0755"
+    - path: /home/amazon/bin/ycsb_cassandra_runner.sh
+      encoding: base64
+      content: ${base64encode(ycsb_cassandra_runner)}
+      owner: "amazon:amazon"
+      permissions: "0755"
+bootcmd:
+    - mkdir /home/amazon/bin
+    - chown amazon:amazon /home/amazon/bin
+runcmd:
+    #- /home/amazon/start_cassandra.sh
+    #- docker pull datastax/dse-studio:6.7.0
+    #- docker run -e DS_LICENSE=accept --memory 4g --name my-dse -d datastax/dse-server:6.7.3 -g -s -k
+    #- docker run -e DS_LICENSE=accept --link my-dse -p 9091:9091 --memory 1g --name my-studio -d datastax/dse-studio:6.7.0
+    #- docker cp cqlsh.script my-dse:/tmp
+    #- docker exec -it my-dse cqlsh -f /tmp/cqlsh.script
+    #- curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.15.0/ycsb-0.15.0.tar.gz
+    #- tar zxpvf ycsb-0.15.0.tar.gz
+    #- aws s3 cp --region=${aws_region} s3://${s3_sa_bucket}/${s3_sa_bucket_demos_prefix}/cassandra/ycsb-mongodb-binding-0.11.0.tar.gz /home/elastic/ycsb-mongodb-binding-0.11.0.tar.gz
+    #- tar zxpvf /home/elastic/ycsb-mongodb-binding-0.11.0.tar.gz -C /home/elastic
+    #- ln -s /home/elastic/ycsb-mongodb-binding-0.11.0 /home/elastic/ycsb-mongodb-binding
+    #- rm -f /home/elastic/ycsb-mongodb-binding-0.11.0.tar.gz
+    #- chown -R elastic.elastic /home/elastic
+    #- systemctl enable ycsb_cassandra
+    #- systemctl start ycsb_cassandra
+    # just let the ASG reboot this box every day
+    #- echo "/sbin/halt" | /usr/bin/at midnight

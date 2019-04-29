@@ -1,0 +1,20 @@
+[Unit]
+Description=YCSB MongoDB Runner
+After=network.target auditd.service
+
+[Service]
+StartLimitInterval=0
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillSignal=SIGQUIT
+KillMode=mixed
+RemainAfterExit=yes
+Restart=on-failure
+User=amazon
+Group=amazon
+ExecStart=/home/amazon/bin/ycsb_cassandra_runner.sh
+
+[Install]
+WantedBy=multi-user.target
