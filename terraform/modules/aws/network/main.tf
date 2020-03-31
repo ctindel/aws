@@ -199,6 +199,32 @@ resource "aws_security_group" "allow_kibana_from_anywhere" {
   }
 }
 
+resource "aws_security_group" "allow_http_from_anywhere" {
+  name        = "${var.name}-${var.env}-allow-http-from-anywhere"
+  description = "${var.name}-${var.env} VPC Allow HTTP from anywhere security group"
+  vpc_id      = "${module.vpc.vpc_id}"
+
+  tags {
+    Name       = "${var.name}-${var.env}-allow-http-from-anywhere"
+    managed-by = "terraform"
+    owned-by   = "${var.owned_by}"
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "allow_https_from_anywhere" {
   name        = "${var.name}-${var.env}-allow-https-from-anywhere"
   description = "${var.name}-${var.env} VPC Allow HTTPS from anywhere security group"
@@ -251,7 +277,7 @@ resource "aws_security_group" "allow_documentdb_from_anywhere" {
   }
 }
 
-data "aws_acm_certificate" "env_sa_dynamodb_amazon_com" {
-  domain = "*.${var.env}.${var.r53_domain}"
-  statuses = ["ISSUED"]
-}
+#data "aws_acm_certificate" "env_sa_dynamodb_amazon_com" {
+  #domain = "*.${var.env}.${var.r53_domain}"
+  #statuses = ["ISSUED"]
+#}

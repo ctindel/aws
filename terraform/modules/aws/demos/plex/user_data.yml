@@ -1,0 +1,33 @@
+#cloud-config
+debug: true
+disable_root: false
+hostname: ${hostname}
+fqdn: ${hostname}.${sa_dns_domain}
+manage_etc_hosts: true
+apt_update: true
+package_upgrade: true
+apt_sources:
+# Need nfs-common for EFS
+packages:
+    - nfs-common
+growpart:
+    mode: auto
+    devices: ['/']
+    ignore_growroot_disabled: false
+write_files:
+    - path: /root/bin/setup_storage.sh
+      encoding: base64
+      content: ${base64encode(setup_storage_sh)}
+      owner: "root:root"
+      permissions: "0755"
+    - path: /root/bin/install_plex.sh
+      encoding: base64
+      content: ${base64encode(install_plex_sh)}
+      owner: "root:root"
+      permissions: "0755"
+bootcmd:
+    - mkdir /home/amazon/bin
+    - chown amazon:amazon /home/amazon/bin
+runcmd:
+    - /root/bin/setup_storage.sh
+    - /root/bin/install_plex.sh

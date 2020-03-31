@@ -24,7 +24,7 @@ write_files:
       permissions: "0644"
     - path: /home/amazon/start_cassandra.sh
       encoding: base64
-      content: ${base64encode(cstart_cassandra_sh)}
+      content: ${base64encode(start_cassandra_sh)}
       owner: "amazon:amazon"
       permissions: "0755"
     - path: /home/amazon/bin/ycsb_cassandra_runner.sh

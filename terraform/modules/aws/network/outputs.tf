@@ -70,9 +70,9 @@ output "s3_sa_demo_gallery_bucket_id" {
 }
 
 # ACM
-output "sa_dynamodb_amazon_com_cert_arn" {
-  value = "${data.aws_acm_certificate.env_sa_dynamodb_amazon_com.arn}"
-}
+#output "sa_dynamodb_amazon_com_cert_arn" {
+  #value = "${data.aws_acm_certificate.env_sa_dynamodb_amazon_com.arn}"
+#}
 
 # ECS
 #output "ecs_cluster_id" {
