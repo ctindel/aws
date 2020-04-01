@@ -36,8 +36,12 @@ EOF
     retry_run_cmd "mkfs.xfs -f /dev/nvme${i}n1p1"
 done
 
+echo "/dev/nvme0n1p1 /tmp xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
+mount /tmp
+chmod 1777 /tmp
+
 install -d -m 700 /mnt/ephemeral
-echo "/dev/nvme0n1p1 /mnt/ephemeral xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
+echo "/dev/nvme1n1p1 /mnt/ephemeral xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
 mount /mnt/ephemeral
 
 mkdir -p /mnt/ephemeral/{media,shared,data}
@@ -50,5 +54,5 @@ mkdir -p /mnt/ephemeral/shared/download/usenet/{complete,incomplete}
 mkdir -p /mnt/ephemeral/shared/download/usenet/complete/{fights,tv,movies}
 
 mkdir /var/lib/plexmediaserver
-echo "/dev/nvme1n1p1 /var/lib/plexmediaserver xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
+echo "/dev/nvme2n1p1 /var/lib/plexmediaserver xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
 mount /var/lib/plexmediaserver
