@@ -31,6 +31,9 @@ cp -a /mnt/efs/plex/srv /home/amazon
 chown -R amazon:amazon /home/amazon/srv
 
 docker-compose -f /home/amazon/srv/sabnzbd/docker-compose.yml up -d
+docker-compose -f /home/amazon/srv/nzbhydra/docker-compose.yml up -d
+docker-compose -f /home/amazon/srv/sonarr/docker-compose.yml up -d
+docker-compose -f /home/amazon/srv/radarr/docker-compose.yml up -d
 docker-compose -f /home/amazon/srv/synclounge/docker-compose.yml up -d
 
 # Restore any downloaded media
