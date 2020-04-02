@@ -7,9 +7,7 @@ manage_etc_hosts: true
 apt_update: true
 package_upgrade: true
 apt_sources:
-# Need nfs-common for EFS
 packages:
-    - nfs-common
 growpart:
     mode: auto
     devices: ['/']

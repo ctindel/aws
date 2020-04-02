@@ -36,6 +36,12 @@ EOF
     retry_run_cmd "mkfs.xfs -f /dev/nvme${i}n1p1"
 done
 
+sed -i.bak "1,1 s/^/#Commented out because docker server is broken and not server these files and its too much work to fix the packer file right now plus we don't need a docker update as long as the containers start\n#/" /etc/apt/sources.list.d/docker.list
+rm -f /var/lib/dpkg/lock
+apt-get update -y
+# Need nfs-common for mounting EFS volumes
+apt-get install -y nfs-common
+
 echo "/dev/nvme0n1p1 /tmp xfs  defaults,pquota,prjquota  0 0" >> /etc/fstab
 mount /tmp
 chmod 1777 /tmp

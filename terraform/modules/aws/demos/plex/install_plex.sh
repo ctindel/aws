@@ -37,4 +37,6 @@ docker-compose -f /home/amazon/srv/radarr/docker-compose.yml up -d
 docker-compose -f /home/amazon/srv/synclounge/docker-compose.yml up -d
 
 # Restore any downloaded media
-rsync -r /mnt/efs/plex/media/ /mnt/ephemeral/media/ 
+echo "Starting Media rsync from EFS... could take a while"
+rsync -r /mnt/efs/plex/media/ /mnt/ephemeral/media/
+echo "Media rsync from EFS complete!"
